@@ -51,7 +51,7 @@ Example:
   "schema_version": 1,
   "suppressed_count": 0,
   "tool": "bloxguard",
-  "version": "0.1.0-rc.1"
+  "version": "0.1.0-rc.2"
 }
 ```
 

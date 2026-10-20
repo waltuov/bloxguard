@@ -159,7 +159,7 @@ dependencies = [
 
 [[package]]
 name = "bloxguard"
-version = "0.1.0-rc.1"
+version = "0.1.0-rc.2"
 dependencies = [
  "bloxguard-core",
  "clap",
@@ -172,7 +172,7 @@ dependencies = [
 
 [[package]]
 name = "bloxguard-core"
-version = "0.1.0-rc.1"
+version = "0.1.0-rc.2"
 dependencies = [
  "full_moon",
  "globset",

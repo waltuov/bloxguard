@@ -9,7 +9,7 @@ authors.workspace = true
 repository.workspace = true
 
 [dependencies]
-bloxguard-core = { path = "../bloxguard-core", version = "0.1.0-rc.1" }
+bloxguard-core = { path = "../bloxguard-core", version = "0.1.0-rc.2" }
 clap.workspace = true
 serde.workspace = true
 serde_json.workspace = true

@@ -4,6 +4,18 @@ All notable changes will be recorded here.
 
 ## Unreleased
 
+## 0.1.0-rc.2 (2026-10-20)
+
+### Fixed
+
+- A folder with two place or model files that hold the same infected script at the same instance path reported it for only one file. Each file now keeps its own finding.
+- The Windows binary needed the Visual C++ runtime and did not start on a PC without it. It now links the C runtime statically.
+
+### Changed
+
+- The note after a drop mode scan follows the most severe finding instead of the failure threshold: "Some findings are high or critical" or "No high or critical findings". An incomplete scan with a high finding gets both notes.
+- The README is written for game developers who use Studio: save the game, download, drop the file onto `bloxguard.exe`, and what to do with each kind of finding.
+
 ## 0.1.0-rc.1 (2026-10-20)
 
 First public pre-release.

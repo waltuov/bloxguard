@@ -1,0 +1,34 @@
+name: Missed backdoor
+description: bloxguard did not flag a backdoor trick.
+labels: ["missed backdoor"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Never upload a working backdoor or a real infected model. Describe the trick, or show a defanged copy: change every asset ID to `999000000000000` and every webhook URL to `https://discord.com/api/webhooks/000/FAKE`. If the trick is a new way to hide code from bloxguard, report it privately instead, as described in SECURITY.md.
+  - type: input
+    id: version
+    attributes:
+      label: bloxguard version
+      description: The first line of the result, such as "bloxguard 0.1.0-rc.2".
+    validations:
+      required: true
+  - type: textarea
+    id: trick
+    attributes:
+      label: What the backdoor does
+      description: For example, which line loads code and how the ID is hidden.
+    validations:
+      required: true
+  - type: textarea
+    id: code
+    attributes:
+      label: Defanged code
+      description: The smallest piece of code that shows the trick, with IDs and URLs replaced as above.
+      render: lua
+  - type: textarea
+    id: result
+    attributes:
+      label: What bloxguard showed
+      description: Paste the result, or say that it found nothing.
+      render: text

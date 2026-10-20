@@ -23,13 +23,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: waltuov/bloxguard@v0.1.0-rc.1
+      - uses: waltuov/bloxguard@v0.1.0-rc.2
         with:
           paths: |
             MyPlace.rbxl
             src
           fail-on: high
 ```
+
+Replace `MyPlace.rbxl` and `src` with your own files and folders, or leave out `paths` to scan the whole repository. A path that does not exist makes the scan incomplete, and the job fails with exit code 2. A working setup is in [bloxguard-example](https://github.com/waltuov/bloxguard-example).
 
 A `permissions` block sets every permission it does not list to `none`, so the example lists `contents: read` for the checkout step. `security-events: write` lets the action upload SARIF, and a private repository also needs `actions: read` for that upload. On a private repository, code scanning needs GitHub Code Security. Without it, set `upload-sarif: false`: the scan still runs and sets the exit code, and the upload step is skipped.
 
@@ -38,7 +40,7 @@ To pin the action to a full commit SHA instead of a tag, name the release in `ve
 ```yaml
       - uses: waltuov/bloxguard@<full commit SHA>
         with:
-          version: v0.1.0-rc.1
+          version: v0.1.0-rc.2
 ```
 
 ## Inputs and outputs

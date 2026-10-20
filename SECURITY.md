@@ -2,7 +2,7 @@
 
 ## Supported version
 
-Security fixes go into the latest release. Today that is the pre-release 0.1.0-rc.1.
+Security fixes go into the latest release. Today that is the pre-release 0.1.0-rc.2.
 
 ## Report a scanner bypass privately
 

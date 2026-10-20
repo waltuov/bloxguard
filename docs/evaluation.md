@@ -16,7 +16,7 @@ The v0.1 matrix contains at least two malicious and two clean look alike cases f
 
 BG011 has two extra malicious file cases, a `PackageLink` in an `.rbxm` and one in an `.rbxmx` model, and two extra clean file cases: an unpublished `PackageLink` with an empty reference and a model without package data.
 
-Measured on 2026-10-20 with BloxGuard 0.1.0-rc.1, source commit `96056c1`.
+Measured on 2026-10-20 with BloxGuard 0.1.0-rc.2.
 
 Command:
 
@@ -53,7 +53,7 @@ Command:
 cargo test --locked --package bloxguard-core --test review_round1
 ```
 
-Measured on 2026-10-20 with BloxGuard 0.1.0-rc.1, source commit `96056c1`.
+Measured on 2026-10-20 with BloxGuard 0.1.0-rc.2.
 
 Result: 54 passed, 0 failed in 0.35 seconds after compilation.
 
@@ -87,11 +87,11 @@ The workflow does not run dependency installation, hooks, build scripts, tests, 
 
 ### First run, 2026-10-19
 
-The first run scanned loose files in batches, at commit `183a202`. Its candidates on ordinary code led to four changes: a BG002 value the scan cannot see is medium instead of critical, an instance stored in a loop and required is a local module, a `getfenv().it` read of a test runner's global is BG004 low, and a luau-lsp type declaration file gets a note instead of making the project partial. The remaining NevermoreEngine partial reasons are template files with `{{placeholder}}` names, which are not Luau.
+The first run scanned loose files in batches, with a development version before the first public release. Its candidates on ordinary code led to four changes: a BG002 value the scan cannot see is medium instead of critical, an instance stored in a loop and required is a local module, a `getfenv().it` read of a test runner's global is BG004 low, and a luau-lsp type declaration file gets a note instead of making the project partial. The remaining NevermoreEngine partial reasons are template files with `{{placeholder}}` names, which are not Luau.
 
 ### Tree scan, 2026-10-19
 
-The tree scan ran at commit `d6e6f67` on a GitHub hosted Linux runner. It covered 16 projects with 2,833 source files and 3,022 scripts, in 6.2 seconds of scan time in total. The commits up to `cd8607e` change only output, documentation and the Action, and a second run there gave the same findings. The real game fixes change analysis and loading, and a third run at `708a8ad`, the latest, gave the same findings too. The commits after it up to 0.1.0-rc.1 change no detection, severity or loading code.
+The tree scan ran on a GitHub hosted Linux runner, with a development version before the first public release. It covered 16 projects with 2,833 source files and 3,022 scripts, in 6.2 seconds of scan time in total. Three more runs gave the same findings: one after changes to output, documentation and the Action, one after the real game fixes below, which change analysis and loading, and one on 0.1.0-rc.1.
 
 | Result | Projects |
 | --- | ---: |
@@ -112,7 +112,7 @@ The two complete projects with high candidates are lemur, whose module loader ru
 
 ## Real games, 2026-10-19
 
-The project's author scanned three of their team's own games: a place saved by current Roblox Studio and two places built with Rojo that bundle Wally packages such as React and Jest, plus the Rojo project folder. The scans ran locally and only read the files. The games are private, so only counts are given. "Before" is commit `e559083`, "after" is commit `635260d`, the merge of the fixes these scans led to. `708a8ad` has the same code.
+The project's author scanned three of their team's own games: a place saved by current Roblox Studio and two places built with Rojo that bundle Wally packages such as React and Jest, plus the Rojo project folder. The scans ran locally and only read the files. The games are private, so only counts are given. "Before" is the development version the scans first ran on, "after" is the version with the fixes these scans led to, which 0.1.0-rc.1 includes.
 
 | Input | Before | After |
 | --- | --- | --- |
@@ -135,7 +135,7 @@ cargo build --locked --release --package bloxguard --bin bloxguard
 cargo run --locked --release --package bloxguard-core --example performance
 ```
 
-Measured on 2026-10-20 with BloxGuard 0.1.0-rc.1 from source commit `96056c1`.
+Measured on 2026-10-20 with BloxGuard 0.1.0-rc.1.
 
 | Field | Result |
 | --- | ---: |

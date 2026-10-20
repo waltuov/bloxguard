@@ -10,18 +10,18 @@ The [releases page](https://github.com/waltuov/bloxguard/releases) has one archi
 
 | Platform | Archive |
 | --- | --- |
-| Windows, x64 | `bloxguard-0.1.0-rc.1-windows-x86_64.zip` |
-| macOS, Apple silicon | `bloxguard-0.1.0-rc.1-macos-aarch64.zip` |
-| macOS, Intel | `bloxguard-0.1.0-rc.1-macos-x86_64.zip` |
-| Linux, x64 | `bloxguard-0.1.0-rc.1-linux-x86_64.zip` |
-| Linux, arm64 | `bloxguard-0.1.0-rc.1-linux-aarch64.zip` |
+| Windows, x64 | `bloxguard-0.1.0-rc.2-windows-x86_64.zip` |
+| macOS, Apple silicon | `bloxguard-0.1.0-rc.2-macos-aarch64.zip` |
+| macOS, Intel | `bloxguard-0.1.0-rc.2-macos-x86_64.zip` |
+| Linux, x64 | `bloxguard-0.1.0-rc.2-linux-x86_64.zip` |
+| Linux, arm64 | `bloxguard-0.1.0-rc.2-linux-aarch64.zip` |
 
-0.1.0-rc.1 is a pre-release. `SHA256SUMS` on the same page lists the SHA-256 of every archive. To check a download, run this in the download folder.
+0.1.0-rc.2 is a pre-release. `SHA256SUMS` on the same page lists the SHA-256 of every archive. To check a download, run this in the download folder.
 
 Windows PowerShell prints `True` when the archive matches:
 
 ```powershell
-(Get-FileHash .\bloxguard-0.1.0-rc.1-windows-x86_64.zip).Hash -eq ((Select-String -Path .\SHA256SUMS -SimpleMatch 'bloxguard-0.1.0-rc.1-windows-x86_64.zip').Line -split '\s+')[0]
+(Get-FileHash .\bloxguard-0.1.0-rc.2-windows-x86_64.zip).Hash -eq ((Select-String -Path .\SHA256SUMS -SimpleMatch 'bloxguard-0.1.0-rc.2-windows-x86_64.zip').Line -split '\s+')[0]
 ```
 
 macOS:
@@ -43,7 +43,7 @@ The downloads are not signed yet. On Windows, the first start may show "Windows 
 In a project with a `rokit.toml` (create one with `rokit init`):
 
 ```sh
-rokit add waltuov/bloxguard@0.1.0-rc.1
+rokit add waltuov/bloxguard@0.1.0-rc.2
 ```
 
 Add `--global` to install it for every project. Write the version without a leading `v`. While only the pre-release exists, `rokit add waltuov/bloxguard` without a version finds no release, because it skips pre-releases.
@@ -53,7 +53,7 @@ Add `--global` to install it for every project. Write the version without a lead
 With Rust 1.96 or newer:
 
 ```sh
-cargo install --git https://github.com/waltuov/bloxguard --tag v0.1.0-rc.1 --locked bloxguard
+cargo install --git https://github.com/waltuov/bloxguard --tag v0.1.0-rc.2 --locked bloxguard
 ```
 
 ### Build from a checkout
@@ -78,7 +78,7 @@ The examples call `bloxguard`. Use the full path to the program if it is not on 
 Here is `bloxguard scan .` on a Rojo project with a free car kit in `src/workspace/FAKE_FreeCarKit`. Line 6 of its weld script is an `end` followed by 300 spaces and `getfenv()[string.reverse("eriuqer")](999000000004242)`. All names and IDs are fake. Captured on Windows:
 
 ```text
-bloxguard 0.1.0-rc.1 scan: complete
+bloxguard 0.1.0-rc.2 scan: complete
 
 . [complete]
   9 instances, 3 scripts

@@ -1,0 +1,36 @@
+name: False alarm
+description: bloxguard flagged code that is normal.
+labels: ["false alarm"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting this. Before you paste anything, change every asset ID to `999000000000000` and every webhook URL to `https://discord.com/api/webhooks/000/FAKE`, and leave out game, account and creator names.
+  - type: input
+    id: version
+    attributes:
+      label: bloxguard version
+      description: The first line of the result, such as "bloxguard 0.1.0-rc.2".
+    validations:
+      required: true
+  - type: textarea
+    id: finding
+    attributes:
+      label: The finding
+      description: Copy the finding from the result, from its first line to its evidence line.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: code
+    attributes:
+      label: The code around it
+      description: The few lines around the line shown, with IDs and URLs replaced as above.
+      render: lua
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it is normal
+      description: What the code does in your game.
+    validations:
+      required: true
