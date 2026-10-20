@@ -117,6 +117,10 @@ jobs:
         run: rustup default 1.96.0
 
       - name: Build release binary
+        env:
+          # Link the C runtime statically, so the Windows binary starts on a PC
+          # without the Visual C++ runtime installed.
+          CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS: -C target-feature=+crt-static
         run: cargo build --locked --release --package bloxguard --bin bloxguard --target ${{ matrix.target }}
 
       - name: Package release binary

@@ -208,8 +208,10 @@ fn drop_scan(args: &[OsString]) -> u8 {
         unreachable!("drop mode arguments always parse as scan");
     };
     match scan(scan_args) {
-        Ok((code, findings)) => {
-            println!("\n{}", drop_note(code, findings));
+        Ok((code, highest)) => {
+            for note in drop_notes(code, highest) {
+                println!("\n{note}");
+            }
             code
         }
         Err(error) => {
@@ -219,24 +221,30 @@ fn drop_scan(args: &[OsString]) -> u8 {
     }
 }
 
-/// The note after a drop mode scan, chosen by its exit code and whether the
-/// report lists any finding.
-fn drop_note(code: u8, findings: usize) -> &'static str {
+const HIGH_NOTE: &str = "Some findings are high or critical. Open the game in Studio, find each script by the path shown above, and remove it unless you know why it is there. See https://github.com/waltuov/bloxguard#what-to-do-with-the-results";
+const PARTIAL_NOTE: &str = "Part of the input could not be checked (see the reasons above), so this result is not complete and not clean.";
+const OTHER_FINDINGS_NOTE: &str = "No high or critical findings. Read the medium and low findings above too: a clean result does not prove the game is safe.";
+const NO_FINDINGS_NOTE: &str = "No findings. A clean result does not prove the game is safe, but none of the known backdoor tricks were found.";
+
+/// The notes after a drop mode scan, chosen by the most severe finding the
+/// report lists, not by the threshold, and by whether the scan is incomplete
+/// (exit code 2). A high finding in an incomplete scan gets both notes.
+fn drop_notes(code: u8, highest: Option<Severity>) -> Vec<&'static str> {
     debug_assert!(code <= 2, "a scan returns exit code 0, 1 or 2");
-    match code {
-        1 => {
-            "Some findings meet the high threshold. Open the game in Studio, find each script by the path shown above, and remove it unless you know why it is there. See https://github.com/waltuov/bloxguard#what-to-do-with-the-results"
-        }
-        2 => {
-            "Part of the input could not be checked (see the reasons above), so this result is not complete and not clean."
-        }
-        _ if findings > 0 => {
-            "No finding meets the high threshold. Read the medium and low findings above too: a clean result does not prove the game is safe."
-        }
-        _ => {
-            "No findings. A clean result does not prove the game is safe, but none of the known backdoor tricks were found."
-        }
+    let mut notes = Vec::new();
+    if highest >= Some(Severity::High) {
+        notes.push(HIGH_NOTE);
     }
+    if code == 2 {
+        notes.push(PARTIAL_NOTE);
+    } else if notes.is_empty() {
+        notes.push(if highest.is_some() {
+            OTHER_FINDINGS_NOTE
+        } else {
+            NO_FINDINGS_NOTE
+        });
+    }
+    notes
 }
 
 /// Wait for Enter before exiting only for a drop or a start without
@@ -300,8 +308,9 @@ fn emit(text: String, path: Option<PathBuf>) -> Result<(), String> {
             .map_err(|e| format!("cannot write stdout: {e}"))
     }
 }
-/// Run `scan` and return its exit code and the number of findings it reported.
-fn scan(args: ScanArgs) -> Result<(u8, usize), String> {
+/// Run `scan` and return its exit code and the severity of the most severe
+/// finding it reported.
+fn scan(args: ScanArgs) -> Result<(u8, Option<Severity>), String> {
     let mut config = config(args.config)?;
     if let Some(threshold) = args.fail_on {
         config.fail_on = threshold;
@@ -314,7 +323,8 @@ fn scan(args: ScanArgs) -> Result<(u8, usize), String> {
     let report = bloxguard_core::engine::scan_paths(&args.paths, &config);
     let code = report.exit_code(config.fail_on, args.allow_incomplete);
     emit(render(&report, args.format)?, args.output)?;
-    Ok((code, report.findings.len()))
+    let highest = report.findings.iter().map(|finding| finding.severity).max();
+    Ok((code, highest))
 }
 async fn run(cli: Cli) -> Result<u8, String> {
     match cli.command {
@@ -570,12 +580,20 @@ mod tests {
     }
 
     #[test]
-    fn the_drop_note_follows_the_result() {
-        assert!(drop_note(1, 3).starts_with("Some findings meet the high threshold."));
-        assert!(drop_note(0, 2).starts_with("No finding meets the high threshold."));
-        assert!(drop_note(0, 0).starts_with("No findings."));
-        for findings in [0, 5] {
-            assert!(drop_note(2, findings).starts_with("Part of the input"));
+    fn the_drop_note_follows_the_most_severe_finding() {
+        for highest in [Severity::High, Severity::Critical] {
+            assert_eq!(drop_notes(1, Some(highest)), [HIGH_NOTE]);
+            // An incomplete scan names the high finding and the gap.
+            assert_eq!(drop_notes(2, Some(highest)), [HIGH_NOTE, PARTIAL_NOTE]);
         }
+        for highest in [Severity::Low, Severity::Medium] {
+            // A threshold set below high fails the scan, but the note stays true.
+            for code in [0, 1] {
+                assert_eq!(drop_notes(code, Some(highest)), [OTHER_FINDINGS_NOTE]);
+            }
+            assert_eq!(drop_notes(2, Some(highest)), [PARTIAL_NOTE]);
+        }
+        assert_eq!(drop_notes(0, None), [NO_FINDINGS_NOTE]);
+        assert_eq!(drop_notes(2, None), [PARTIAL_NOTE]);
     }
 }

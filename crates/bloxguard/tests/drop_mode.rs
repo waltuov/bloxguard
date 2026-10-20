@@ -9,8 +9,8 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, Output, Stdio};
 use std::time::{Duration, Instant};
 
-const EXIT_1_NOTE: &str = "Some findings meet the high threshold. Open the game in Studio, find each script by the path shown above, and remove it unless you know why it is there. See https://github.com/waltuov/bloxguard#what-to-do-with-the-results";
-const EXIT_0_FINDINGS_NOTE: &str = "No finding meets the high threshold. Read the medium and low findings above too: a clean result does not prove the game is safe.";
+const EXIT_1_NOTE: &str = "Some findings are high or critical. Open the game in Studio, find each script by the path shown above, and remove it unless you know why it is there. See https://github.com/waltuov/bloxguard#what-to-do-with-the-results";
+const EXIT_0_FINDINGS_NOTE: &str = "No high or critical findings. Read the medium and low findings above too: a clean result does not prove the game is safe.";
 const EXIT_0_CLEAN_NOTE: &str = "No findings. A clean result does not prove the game is safe, but none of the known backdoor tricks were found.";
 const EXIT_2_NOTE: &str = "Part of the input could not be checked (see the reasons above), so this result is not complete and not clean.";
 
@@ -83,9 +83,25 @@ fn drop_mode_prints_the_scan_report_and_a_note_for_each_result() {
     assert_drop_matches_scan(temp.path(), &[&low], 0, EXIT_0_FINDINGS_NOTE);
     assert_drop_matches_scan(temp.path(), &[&risky], 1, EXIT_1_NOTE);
     assert_drop_matches_scan(temp.path(), &[&broken], 2, EXIT_2_NOTE);
-    // Several paths, and a partial input beside a high finding, as in `scan`.
+    // Several paths, and a partial input beside a high finding, as in `scan`: the
+    // high finding is named before the partial note.
     assert_drop_matches_scan(temp.path(), &[&clean, &low], 0, EXIT_0_FINDINGS_NOTE);
-    assert_drop_matches_scan(temp.path(), &[&risky, &broken], 2, EXIT_2_NOTE);
+    assert_drop_matches_scan(
+        temp.path(),
+        &[&risky, &broken],
+        2,
+        &format!("{EXIT_1_NOTE}\n\n{EXIT_2_NOTE}"),
+    );
+}
+
+#[test]
+fn the_drop_note_follows_the_findings_not_the_threshold() {
+    let temp = temp_dir();
+    write(temp.path(), "bloxguard.toml", "fail_on = \"low\"\n");
+    let low = write(temp.path(), "FAKE_services.luau", LOW_ONLY);
+    // The configured threshold fails the scan on a low finding, but the note
+    // still says that nothing high or critical was found.
+    assert_drop_matches_scan(temp.path(), &[&low], 1, EXIT_0_FINDINGS_NOTE);
 }
 
 #[test]
