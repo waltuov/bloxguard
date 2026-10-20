@@ -127,7 +127,9 @@ try {
     if ($IsWindows) {
         Compress-Archive -LiteralPath $stagedBinary -DestinationPath $archivePath -CompressionLevel Optimal
     } else {
-        & chmod 755 -- $stagedBinary
+        # The staged path is absolute, so it cannot read as an option. No `--`:
+        # BSD chmod on macOS takes it for a file name after the mode.
+        & chmod 755 $stagedBinary
         if ($LASTEXITCODE -ne 0) {
             throw "Could not set executable permissions on the staged binary."
         }
@@ -136,7 +138,9 @@ try {
         }
         Push-Location $stagingDirectory
         try {
-            & zip -q -9 -- $archivePath "bloxguard$extension"
+            # Info-ZIP zip rejects `--` before the archive name; the archive path
+            # is absolute and the entry name is fixed, so neither reads as an option.
+            & zip -q -9 $archivePath "bloxguard$extension"
             if ($LASTEXITCODE -ne 0) {
                 throw "Could not create release archive '$archivePath'."
             }

@@ -92,7 +92,9 @@ if ($binaries.Count -ne 1) {
     throw "Expected exactly one $binaryName in $assetName, found $($binaries.Count)."
 }
 if ($platform -ne "windows") {
-    & chmod +x -- $binaries[0].FullName
+    # FullName is absolute, so it cannot read as an option. No `--`: BSD chmod
+    # on macOS takes it for a file name after the mode.
+    & chmod +x $binaries[0].FullName
     if ($LASTEXITCODE -ne 0) {
         throw "Could not mark the downloaded binary executable."
     }
