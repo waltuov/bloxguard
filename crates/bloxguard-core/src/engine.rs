@@ -229,6 +229,7 @@ fn scan_documents_on_worker(
             a.location.line,
             a.location.column,
             &a.fingerprint,
+            &a.container_file,
         )
             .cmp(&(
                 &b.input,
@@ -238,11 +239,15 @@ fn scan_documents_on_worker(
                 b.location.line,
                 b.location.column,
                 &b.fingerprint,
+                &b.container_file,
             ))
     });
+    // Two place or model files in one scanned folder can hold the same script at
+    // the same instance path, so the file that holds it is part of the key.
     report.findings.dedup_by(|a, b| {
         a.input == b.input
             && a.source_file == b.source_file
+            && a.container_file == b.container_file
             && a.fingerprint == b.fingerprint
             && a.location == b.location
     });

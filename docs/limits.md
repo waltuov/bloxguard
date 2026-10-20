@@ -22,6 +22,8 @@ A few terms used below: a value is *folded* when the scanner works out its exact
 
 bloxguard sees only the files and source text you give it. It cannot see code fetched later from the internet. A finding does not prove intent. A clean result does not prove that an asset is safe. The scanner is one review step and does not replace Roblox sandboxing, account controls, or manual review.
 
+- **Studio plugins.** Plugins installed in Studio are not part of a place file, so a scan of the place does not check them. A plugin's own `.rbxm` or `.rbxmx` file can be scanned like any model.
+- **Identical copies at one path.** A finding is reported once per input file, rule, instance path, evidence and location. Two copies of the same script under the same names in one place give one finding, so search the place for every copy. Copies in different place or model files of a scanned folder are reported for each file.
 - **Data fetched at runtime.** Responses from `HttpService`, DataStores, `MarketplaceService`, and other services are not visible offline. BG007 reports runtime asset loads, but the loaded content is not scanned.
 
 ## Medium findings pass the default threshold
