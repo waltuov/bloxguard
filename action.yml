@@ -1,0 +1,89 @@
+name: Bloxguard scan
+description: Scan Roblox files and Luau source trees, then upload SARIF to GitHub code scanning.
+author: waltu
+
+branding:
+  icon: shield
+  color: blue
+
+inputs:
+  paths:
+    description: Paths to scan, separated by newlines. The default is the repository root. A Rojo project file there is checked and noted, not applied.
+    required: false
+    default: .
+  fail-on:
+    description: Lowest severity that makes the scan fail.
+    required: false
+    default: high
+  config:
+    description: Path to bloxguard.toml. Leave empty to use automatic discovery.
+    required: false
+    default: ''
+  baseline:
+    description: Path to a baseline file. Leave empty to report every finding.
+    required: false
+    default: ''
+  allow-incomplete:
+    description: Allow a partial scan to use the findings exit code instead of exit code 2.
+    required: false
+    default: 'false'
+  upload-sarif:
+    description: Upload the SARIF file to GitHub code scanning. Set to 'false' where code scanning is not available, such as a private repository without GitHub Code Security.
+    required: false
+    default: 'true'
+  version:
+    description: Release version to download. Defaults to the action ref and must resolve to a version tag.
+    required: false
+    default: ''
+
+outputs:
+  exit-code:
+    description: Exit code returned by bloxguard.
+    value: ${{ steps.scan.outputs.exit_code }}
+  sarif-file:
+    description: Absolute path to the generated SARIF file.
+    value: ${{ steps.scan.outputs.sarif_file }}
+
+runs:
+  using: composite
+  steps:
+    - name: Download and verify bloxguard
+      id: download
+      shell: pwsh
+      env:
+        BLOXGUARD_ACTION_REF: ${{ github.action_ref }}
+        BLOXGUARD_REPOSITORY: ${{ github.action_repository }}
+        BLOXGUARD_VERSION: ${{ inputs.version }}
+        BLOXGUARD_GITHUB_TOKEN: ${{ github.token }}
+      run: '& "$env:GITHUB_ACTION_PATH/scripts/action-download.ps1"'
+
+    - name: Scan
+      id: scan
+      shell: pwsh
+      env:
+        BLOXGUARD_ALLOW_INCOMPLETE: ${{ inputs.allow-incomplete }}
+        BLOXGUARD_BASELINE: ${{ inputs.baseline }}
+        BLOXGUARD_BINARY: ${{ steps.download.outputs.binary }}
+        BLOXGUARD_CONFIG: ${{ inputs.config }}
+        BLOXGUARD_FAIL_ON: ${{ inputs.fail-on }}
+        BLOXGUARD_PATHS: ${{ inputs.paths }}
+        BLOXGUARD_UPLOAD_SARIF: ${{ inputs.upload-sarif }}
+      run: '& "$env:GITHUB_ACTION_PATH/scripts/action-run.ps1"'
+
+    - name: Upload SARIF
+      if: always() && inputs.upload-sarif == 'true' && steps.scan.outputs.sarif_file != ''
+      uses: github/codeql-action/upload-sarif@2892aa5e19bbd11bc0cff5427e3b750a04d9e3c2
+      with:
+        sarif_file: ${{ steps.scan.outputs.sarif_file }}
+        category: bloxguard
+
+    - name: Preserve bloxguard exit code
+      if: always()
+      shell: pwsh
+      env:
+        BLOXGUARD_EXIT_CODE: ${{ steps.scan.outputs.exit_code }}
+      run: |
+        if ([string]::IsNullOrWhiteSpace($env:BLOXGUARD_EXIT_CODE)) {
+          throw "The bloxguard scan did not produce an exit code."
+        }
+        exit [int]$env:BLOXGUARD_EXIT_CODE

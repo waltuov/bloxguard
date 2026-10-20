@@ -1,0 +1,36 @@
+[package]
+name = "bloxguard-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2024"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "=0.4.13"
+bloxguard-core = { path = "../crates/bloxguard-core" }
+
+[[bin]]
+name = "binary_loader"
+path = "fuzz_targets/binary_loader.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "xml_loader"
+path = "fuzz_targets/xml_loader.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "luau_frontend"
+path = "fuzz_targets/luau_frontend.rs"
+test = false
+doc = false
+bench = false
+
+[workspace]
+members = ["."]

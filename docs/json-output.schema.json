@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "bloxguard JSON output version 1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "tool",
+    "version",
+    "completeness",
+    "inputs",
+    "inventory",
+    "findings",
+    "suppressed_count",
+    "baseline_count"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "tool": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "minLength": 1 },
+    "completeness": { "$ref": "#/$defs/completeness" },
+    "inputs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/input" }
+    },
+    "inventory": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/inventory" }
+    },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/finding" }
+    },
+    "suppressed_count": { "type": "integer", "minimum": 0 },
+    "baseline_count": { "type": "integer", "minimum": 0 }
+  },
+  "$defs": {
+    "completeness": {
+      "type": "string",
+      "enum": ["complete", "partial", "failed"]
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"]
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["low", "medium", "high"]
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["input", "completeness", "reasons", "instance_count", "script_count"],
+      "properties": {
+        "input": { "type": "string" },
+        "completeness": { "$ref": "#/$defs/completeness" },
+        "reasons": { "type": "array", "items": { "type": "string" } },
+        "diagnostics": { "type": "array", "items": {
+          "type": "object", "additionalProperties": false,
+          "required": ["level", "message"],
+          "properties": { "level": {"const":"info"}, "message":{"type":"string"}, "instance_path":{"type":"string"} }
+        } },
+        "instance_count": { "type": "integer", "minimum": 0 },
+        "script_count": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "input",
+        "instance_path",
+        "class",
+        "run_context",
+        "enabled",
+        "size_bytes",
+        "sha256",
+        "source_file"
+      ],
+      "properties": {
+        "input": { "type": "string" },
+        "instance_path": { "type": "string" },
+        "class": { "type": "string" },
+        "run_context": {},
+        "enabled": { "type": ["boolean", "null"] },
+        "size_bytes": { "type": "integer", "minimum": 0 },
+        "sha256": {
+          "anyOf": [
+            { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+            { "type": "null" }
+          ]
+        },
+        "source_file": { "type": ["string", "null"] }
+      }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "line": { "type": "integer", "minimum": 1 },
+        "column": { "type": "integer", "minimum": 1 },
+        "end_line": { "type": "integer", "minimum": 1 },
+        "end_column": { "type": "integer", "minimum": 1 },
+        "property": { "type": "string" },
+        "attribute": { "type": "string" }
+      }
+    },
+    "related_location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["instance_path", "location", "message"],
+      "properties": {
+        "instance_path": { "type": "string" },
+        "location": { "$ref": "#/$defs/location" },
+        "message": { "type": "string" }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rule_id",
+        "severity",
+        "confidence",
+        "input",
+        "instance_path",
+        "location",
+        "message",
+        "evidence",
+        "fingerprint"
+      ],
+      "properties": {
+        "rule_id": { "type": "string", "pattern": "^BG[0-9]{3}$" },
+        "severity": { "$ref": "#/$defs/severity" },
+        "confidence": { "$ref": "#/$defs/confidence" },
+        "input": { "type": "string" },
+        "instance_path": { "type": "string" },
+        "source_file": { "type": "string" },
+        "container_file": { "type": "string" },
+        "location": { "$ref": "#/$defs/location" },
+        "message": { "type": "string" },
+        "evidence": { "type": "string" },
+        "fingerprint": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "related_locations": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/related_location" }
+        }
+      }
+    }
+  }
+}

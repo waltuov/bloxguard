@@ -1,0 +1,70 @@
+---
+source: crates/bloxguard-core/tests/output.rs
+expression: "output::json(&report).unwrap()"
+---
+{
+  "baseline_count": 1,
+  "completeness": "partial",
+  "findings": [
+    {
+      "confidence": "high",
+      "evidence": "require(moduleId)",
+      "fingerprint": "653b0bbe3516a8ace4c673e122370da98bcfc3e594fa9171349e9a6d378e8db5",
+      "input": "C:\\work dir\\FAKE place.rbxlx",
+      "instance_path": "/Workspace/FAKE café/Loader",
+      "location": {
+        "column": 3,
+        "end_column": 18,
+        "end_line": 7,
+        "line": 7
+      },
+      "message": "Remote module ID came from an instance value",
+      "related_locations": [
+        {
+          "instance_path": "/Workspace/FAKE café/Settings/ModuleId",
+          "location": {
+            "property": "Value"
+          },
+          "message": "Resolved moduleId from this NumberValue"
+        }
+      ],
+      "rule_id": "BG002",
+      "severity": "critical",
+      "source_file": "C:\\work dir\\src\\FAKE café.server.luau"
+    }
+  ],
+  "inputs": [
+    {
+      "completeness": "complete",
+      "input": "C:\\work dir\\FAKE place.rbxlx",
+      "instance_count": 4,
+      "reasons": [],
+      "script_count": 1
+    },
+    {
+      "completeness": "partial",
+      "input": "z-empty.rbxm",
+      "instance_count": 0,
+      "reasons": [
+        "file ended before all properties were read"
+      ],
+      "script_count": 0
+    }
+  ],
+  "inventory": [
+    {
+      "class": "Script",
+      "enabled": true,
+      "input": "C:\\work dir\\FAKE place.rbxlx",
+      "instance_path": "/Workspace/FAKE café/Loader",
+      "run_context": "Server",
+      "sha256": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "size_bytes": 17,
+      "source_file": "C:\\work dir\\src\\FAKE café.server.luau"
+    }
+  ],
+  "schema_version": 1,
+  "suppressed_count": 2,
+  "tool": "bloxguard",
+  "version": "0.1.0"
+}

@@ -1,0 +1,196 @@
+# Builds and publishes release binaries, only for a pushed tag such as v0.1.0.
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    name: Prepare draft release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      version: ${{ steps.version.outputs.value }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
+        with:
+          persist-credentials: false
+
+      - name: Install Rust 1.96
+        shell: bash
+        run: rustup toolchain install 1.96.0 --profile minimal
+
+      - name: Select Rust 1.96
+        shell: bash
+        run: rustup default 1.96.0
+
+      - name: Validate version tag
+        id: version
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $tag = $env:GITHUB_REF_NAME
+          if ($tag -notmatch '^v([0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?)$') {
+            throw "Release tags must look like v0.1.0."
+          }
+          $version = $Matches[1]
+          $metadata = cargo metadata --no-deps --locked --format-version 1 | ConvertFrom-Json
+          $binaryPackage = @($metadata.packages | Where-Object { $_.name -eq "bloxguard" })
+          if ($binaryPackage.Count -ne 1) {
+            throw "Expected one workspace package named bloxguard."
+          }
+          if ($binaryPackage[0].version -ne $version) {
+            throw "Tag version $version does not match bloxguard package version $($binaryPackage[0].version)."
+          }
+          "value=$version" | Add-Content -LiteralPath $env:GITHUB_OUTPUT -Encoding utf8
+
+      - name: Create draft release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ steps.version.outputs.value }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          $existing = gh release view $env:GITHUB_REF_NAME --json isDraft 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            $release = $existing | ConvertFrom-Json
+            if (-not $release.isDraft) {
+              throw "Release $env:GITHUB_REF_NAME is already published."
+            }
+          } else {
+            # A version with a pre-release part, such as 0.1.0-rc.1, is created as a
+            # pre-release, and publishing the draft later keeps that flag.
+            $prerelease = @()
+            if ($env:RELEASE_VERSION.Contains("-")) {
+              $prerelease = @("--prerelease")
+            }
+            gh release create $env:GITHUB_REF_NAME --draft --verify-tag --title $env:GITHUB_REF_NAME --generate-notes @prerelease
+            if ($LASTEXITCODE -ne 0) {
+              throw "Could not create draft release $env:GITHUB_REF_NAME."
+            }
+          }
+
+  build:
+    name: Build ${{ matrix.label }}
+    needs: prepare
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: windows-2022
+            target: x86_64-pc-windows-msvc
+            label: windows-x86_64
+          - runner: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            label: linux-x86_64
+          - runner: ubuntu-22.04-arm
+            target: aarch64-unknown-linux-gnu
+            label: linux-aarch64
+          - runner: macos-15
+            target: x86_64-apple-darwin
+            label: macos-x86_64
+          - runner: macos-15
+            target: aarch64-apple-darwin
+            label: macos-aarch64
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Check out source
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
+        with:
+          persist-credentials: false
+
+      - name: Install Rust 1.96 target
+        shell: bash
+        run: rustup toolchain install 1.96.0 --profile minimal --target '${{ matrix.target }}'
+
+      - name: Select Rust 1.96
+        shell: bash
+        run: rustup default 1.96.0
+
+      - name: Build release binary
+        run: cargo build --locked --release --package bloxguard --bin bloxguard --target ${{ matrix.target }}
+
+      - name: Package release binary
+        id: package
+        shell: pwsh
+        run: >-
+          ./scripts/action-package.ps1
+          -Target '${{ matrix.target }}'
+          -Label '${{ matrix.label }}'
+          -Version '${{ needs.prepare.outputs.version }}'
+          -OutputDirectory '${{ github.workspace }}/target/release-artifacts'
+
+      - name: Store archive and checksum
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: bloxguard-${{ matrix.label }}
+          path: |
+            ${{ steps.package.outputs.archive }}
+            ${{ steps.package.outputs.checksum }}
+          if-no-files-found: error
+          retention-days: 1
+
+  publish:
+    name: Publish release
+    needs:
+      - prepare
+      - build
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - name: Download release artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          pattern: bloxguard-*
+          path: release-assets
+          merge-multiple: true
+
+      - name: Create SHA256SUMS
+        shell: pwsh
+        run: |
+          $archives = @(Get-ChildItem -LiteralPath release-assets -Filter '*.zip' -File | Sort-Object Name)
+          $checksumFiles = @(Get-ChildItem -LiteralPath release-assets -Filter '*.sha256' -File | Sort-Object Name)
+          if ($archives.Count -ne 5) {
+            throw "Expected five release archives, found $($archives.Count)."
+          }
+          if ($checksumFiles.Count -ne 5) {
+            throw "Expected five release checksums, found $($checksumFiles.Count)."
+          }
+          $lines = foreach ($file in $checksumFiles) {
+            (Get-Content -LiteralPath $file.FullName -Raw).Trim()
+          }
+          Set-Content -LiteralPath SHA256SUMS -Value $lines -Encoding utf8NoBOM
+
+      - name: Attach checksums and publish
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          $archives = @(
+            Get-ChildItem -LiteralPath release-assets -Filter '*.zip' -File |
+              Sort-Object Name |
+              ForEach-Object { $_.FullName }
+          )
+          if ($archives.Count -ne 5) {
+            throw "Expected five release archives, found $($archives.Count)."
+          }
+          gh release upload $env:GITHUB_REF_NAME @archives SHA256SUMS --clobber
+          if ($LASTEXITCODE -ne 0) {
+            throw "Could not upload release archives and SHA256SUMS."
+          }
+          gh release edit $env:GITHUB_REF_NAME --draft=false
+          if ($LASTEXITCODE -ne 0) {
+            throw "Could not publish release $env:GITHUB_REF_NAME."
+          }

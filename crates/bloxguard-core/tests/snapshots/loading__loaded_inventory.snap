@@ -1,0 +1,13 @@
+---
+source: crates/bloxguard-core/tests/loading.rs
+expression: "output::inventory_human(&report)"
+---
+1 script
+
+/FAKE\u{20}Root/FAKE\u{20}Script
+  input: FAKE inventory.rbxmx
+  class: Script
+  run context: unknown
+  enabled: true
+  size: 22 bytes
+  sha256: 39ca446d92f2c228797d212ab6a58e94f55ff3e84f2c7c6ee25a2cb51543f24f

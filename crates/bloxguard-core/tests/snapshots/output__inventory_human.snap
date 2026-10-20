@@ -1,0 +1,14 @@
+---
+source: crates/bloxguard-core/tests/output.rs
+expression: "output::inventory_human(&report)"
+---
+1 script
+
+/Workspace/FAKE caf\u{e9}/Loader
+  input: C:\work dir\FAKE place.rbxlx
+  class: Script
+  run context: "Server"
+  enabled: true
+  size: 17 bytes
+  sha256: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+  source: C:\work dir\src\FAKE café.server.luau

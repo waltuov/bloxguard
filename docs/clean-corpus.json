@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "selected_on": "2026-10-18",
+  "selection": "Popular open source Roblox projects with a permissive SPDX license in GitHub repository metadata.",
+  "safety": "Fetch these commits only in GitHub Actions. Run only the BloxGuard scanner. Do not run project scripts, builds, hooks, or submodules.",
+  "projects": [
+    {
+      "repository": "Sleitnick/Knit",
+      "url": "https://github.com/Sleitnick/Knit",
+      "commit": "bb1ecf3dea69ca89147b9abe802a8c14399cb5e5",
+      "license": "MIT",
+      "metadata_url": "https://api.github.com/repos/Sleitnick/Knit",
+      "stars_at_selection": 632,
+      "archived_at_selection": true
+    },
+    {
+      "repository": "evaera/Cmdr",
+      "url": "https://github.com/evaera/Cmdr",
+      "commit": "ba4f0ffed0c3a0c90932f8e541cd362160bffd81",
+      "license": "MIT",
+      "metadata_url": "https://api.github.com/repos/evaera/Cmdr",
+      "stars_at_selection": 534,
+      "archived_at_selection": false
+    },
+    {
+      "repository": "evaera/roblox-lua-promise",
+      "url": "https://github.com/evaera/roblox-lua-promise",
+      "commit": "031d429c82ee458a849e79fa523523bd349d7695",
+      "license": "MIT",
+      "metadata_url": "https://api.github.com/repos/evaera/roblox-lua-promise",
+      "stars_at_selection": 351,
+      "archived_at_selection": false
+    },
+    {
+      "repository": "Quenty/NevermoreEngine",
+      "url": "https://github.com/Quenty/NevermoreEngine",
+      "commit": "a3fb9df22d983f4e1b8164e2a5f252620f215caa",
+      "license": "MIT",
+      "metadata_url": "https://api.github.com/repos/Quenty/NevermoreEngine",
+      "stars_at_selection": 621,
+      "archived_at_selection": false
+    },
+    {
+      "repository": "MadStudioRoblox/ProfileService",
+      "url": "https://github.com/MadStudioRoblox/ProfileService",
+      "commit": "d736800444eda6bf75b18397f77dfb2c8f31f60f",
+      "license": "Apache-2.0",
+      "metadata_url": "https://api.github.com/repos/MadStudioRoblox/ProfileService",
+      "stars_at_selection": 332,
+      "archived_at_selection": false
+    },
+    {
+      "repository": "Roblox/roact",
+      "url": "https://github.com/Roblox/roact",
+      "commit": "1676d95c4886d51ee2b21bfcd55c6e50ece799e5",
+      "license": "Apache-2.0",
+      "metadata_url": "https://api.github.com/repos/Roblox/roact",
+      "stars_at_selection": 626,
+      "archived_at_selection": true
+    },
+    {
+      "repository": "Roblox/rodux",
+      "url": "https://github.com/Roblox/rodux",
+      "commit": "120e94ec609c4992c9f2da7c7ae45542b168fd25",
+      "license": "Apache-2.0",
+      "metadata_url": "https://api.github.com/repos/Roblox/rodux",
+      "stars_at_selection": 336,
+      "archived_at_selection": false
+    },
+    {
+      "repository": "Roblox/roact-rodux",
+      "url": "https://github.com/Roblox/roact-rodux",
+      "commit": "5e97d451f3f140701d5e901c3c447b2721afb460",
+      "license": "Apache-2.0",
+      "metadata_url": "https://api.github.com/repos/Roblox/roact-rodux",
+      "stars_at_selection": 100,
+      "archived_at_selection": false
+    },
+    {
+      "repository": "LPGhatguy/lemur",
+      "url": "https://github.com/LPGhatguy/lemur",
+      "commit": "3e4ff7d8f09e57164ad0614c1b81cc9338caf006",
+      "license": "MIT",
+      "metadata_url": "https://api.github.com/repos/LPGhatguy/lemur",
+      "stars_at_selection": 63,
+      "archived_at_selection": true
+    },
+    {
+      "repository": "ffrostfall/BridgeNet2",
+      "url": "https://github.com/ffrostfall/BridgeNet2",
+      "commit": "d7fd18a9613004c9cab959ec96b62ba3c3f9ac2e",
+      "license": "MIT",
+      "metadata_url": "https://api.github.com/repos/ffrostfall/BridgeNet2",
+      "stars_at_selection": 71,
+      "archived_at_selection": false
+    },
+    {
+      "repository": "ffrostfall/ByteNet",
+      "url": "https://github.com/ffrostfall/ByteNet",
+      "commit": "fbdb156b6dafdd9ba58741ded20610215de3a39e",
+      "license": "MIT",
+      "metadata_url": "https://api.github.com/repos/ffrostfall/ByteNet",
+      "stars_at_selection": 183,
+      "archived_at_selection": false
+    },
+    {
+      "repository": "jsdotlua/react-lua",
+      "url": "https://github.com/jsdotlua/react-lua",
+      "commit": "df4b4072e3aa78fc64850f8ca8b696084f305d75",
+      "license": "MIT",
+      "metadata_url": "https://api.github.com/repos/jsdotlua/react-lua",
+      "stars_at_selection": 575,
+      "archived_at_selection": false
+    },
+    {
+      "repository": "howmanysmall/Janitor",
+      "url": "https://github.com/howmanysmall/Janitor",
+      "commit": "47acf39d7b265fad409e438e976affa9468ff0a2",
+      "license": "MIT",
+      "metadata_url": "https://api.github.com/repos/howmanysmall/Janitor",
+      "stars_at_selection": 151,
+      "archived_at_selection": false
+    },
+    {
+      "repository": "dphfox/Fusion",
+      "url": "https://github.com/dphfox/Fusion",
+      "commit": "2790f7b6272bdf7cd0bbfee259a2f9d79ea20810",
+      "license": "MIT",
+      "metadata_url": "https://api.github.com/repos/dphfox/Fusion",
+      "stars_at_selection": 801,
+      "archived_at_selection": false
+    },
+    {
+      "repository": "Sleitnick/RbxUtil",
+      "url": "https://github.com/Sleitnick/RbxUtil",
+      "commit": "31f9120fca021e3dec275b42bc7047d626962082",
+      "license": "MIT",
+      "metadata_url": "https://api.github.com/repos/Sleitnick/RbxUtil",
+      "stars_at_selection": 467,
+      "archived_at_selection": false
+    },
+    {
+      "repository": "littensy/reflex",
+      "url": "https://github.com/littensy/reflex",
+      "commit": "935f3e4ee2e61f1f9abfde58f4176da26b1d623f",
+      "license": "MIT",
+      "metadata_url": "https://api.github.com/repos/littensy/reflex",
+      "stars_at_selection": 109,
+      "archived_at_selection": false
+    }
+  ]
+}

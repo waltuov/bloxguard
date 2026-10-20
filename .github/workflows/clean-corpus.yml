@@ -1,0 +1,58 @@
+# Scans pinned commits of popular open source Roblox projects for false alarms.
+# The projects are fetched only on the runner and only the scanner runs.
+name: Clean corpus
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 9 * * 1'
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  scan:
+    name: Scan pinned corpus
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Check out BloxGuard
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
+        with:
+          persist-credentials: false
+
+      - name: Install Rust 1.96
+        shell: bash
+        run: rustup toolchain install 1.96.0 --profile minimal
+
+      - name: Select Rust 1.96
+        shell: bash
+        run: rustup default 1.96.0
+
+      - name: Build BloxGuard
+        run: cargo build --locked --release --package bloxguard --bin bloxguard
+
+      - name: Scan exact corpus commits
+        env:
+          CORPUS_RESULTS: ${{ runner.temp }}/bloxguard-clean-corpus-results.json
+          CORPUS_SUMMARY: ${{ runner.temp }}/bloxguard-clean-corpus-summary.md
+        run: |
+          python3 scripts/clean-corpus.py \
+            --manifest docs/clean-corpus.json \
+            --scanner target/release/bloxguard \
+            --output "$CORPUS_RESULTS" \
+            --summary "$CORPUS_SUMMARY"
+          cat "$CORPUS_SUMMARY" >> "$GITHUB_STEP_SUMMARY"
+          cp "$CORPUS_RESULTS" clean-corpus-results.json
+
+      - name: Preserve machine readable counts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: clean-corpus-results
+          path: clean-corpus-results.json
+          if-no-files-found: warn
+          retention-days: 30

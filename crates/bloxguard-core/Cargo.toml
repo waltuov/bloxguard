@@ -1,0 +1,31 @@
+[package]
+name = "bloxguard-core"
+description = "Offline static security analysis of Roblox files and Luau"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+full_moon.workspace = true
+rbx_binary.workspace = true
+rbx_xml.workspace = true
+rbx_dom_weak.workspace = true
+rbx_types.workspace = true
+rbx_reflection_database.workspace = true
+toml.workspace = true
+globset.workspace = true
+lz4_flex.workspace = true
+zstd.workspace = true
+
+[dev-dependencies]
+insta.workspace = true
+tempfile.workspace = true
+jsonschema = { version = "0.33", default-features = false }
+

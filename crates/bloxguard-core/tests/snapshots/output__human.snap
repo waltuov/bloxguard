@@ -1,0 +1,18 @@
+---
+source: crates/bloxguard-core/tests/output.rs
+expression: "output::human(&report)"
+---
+bloxguard 0.1.0 scan: partial
+
+C:\work dir\FAKE place.rbxlx [complete]
+  4 instances, 1 script
+  [critical, high confidence] BG002 Remote module ID came from an instance value
+    /Workspace/FAKE caf\u{e9}/Loader (C:\work dir\src\FAKE café.server.luau, line 7:3)
+    evidence: require(moduleId)
+    fingerprint: 653b0bbe3516a8ace4c673e122370da98bcfc3e594fa9171349e9a6d378e8db5
+
+z-empty.rbxm [partial]
+  0 instances, 0 scripts
+  incomplete: file ended before all properties were read
+
+1 finding: 1 critical, 0 high, 0 medium, 0 low; 2 suppressed, 1 in baseline

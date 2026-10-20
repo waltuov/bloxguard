@@ -1,0 +1,9 @@
+/target/
+/.cargo-home/
+/.tmp/
+/artifacts/
+/fuzz/target/
+*.snap.new
+__pycache__/
+*.pyc
+

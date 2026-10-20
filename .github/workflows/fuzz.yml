@@ -1,0 +1,37 @@
+# Short weekly fuzz runs of the file loaders and the Luau front end.
+name: Fuzz
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 10 * * 2'
+
+permissions:
+  contents: read
+
+jobs:
+  fuzz:
+    name: Parse only fuzz targets
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955
+        with:
+          persist-credentials: false
+
+      - name: Install pinned nightly
+        shell: bash
+        run: rustup toolchain install nightly-2026-08-27 --profile minimal
+
+      - name: Install cargo fuzz from crates.io
+        run: cargo install cargo-fuzz --version 0.13.2 --locked
+
+      - name: Fuzz binary loader
+        run: cargo +nightly-2026-08-27 fuzz run binary_loader --fuzz-dir fuzz -- -max_total_time=30 -max_len=1048576 -rss_limit_mb=4096
+
+      - name: Fuzz XML loader
+        run: cargo +nightly-2026-08-27 fuzz run xml_loader --fuzz-dir fuzz -- -max_total_time=30 -max_len=1048576 -rss_limit_mb=4096
+
+      - name: Fuzz Luau front end
+        run: cargo +nightly-2026-08-27 fuzz run luau_frontend --fuzz-dir fuzz -- -max_total_time=30 -max_len=262144 -rss_limit_mb=4096

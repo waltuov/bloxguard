@@ -1,0 +1,405 @@
+---
+source: crates/bloxguard-core/tests/output.rs
+expression: "output::sarif(&report).unwrap()"
+---
+{
+  "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/schemas/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "invocations": [
+        {
+          "executionSuccessful": false,
+          "properties": {
+            "baselineCount": 1,
+            "completeness": "partial",
+            "suppressedCount": 2
+          },
+          "toolExecutionNotifications": [
+            {
+              "level": "warning",
+              "message": {
+                "text": "z-empty.rbxm: file ended before all properties were read"
+              },
+              "properties": {
+                "completeness": "partial",
+                "input": "z-empty.rbxm"
+              }
+            }
+          ]
+        }
+      ],
+      "results": [
+        {
+          "level": "error",
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "/Workspace/FAKE café/Loader",
+                  "kind": "instance"
+                }
+              ],
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/work%20dir/src/FAKE%20caf%C3%A9.server.luau"
+                },
+                "region": {
+                  "endColumn": 18,
+                  "endLine": 7,
+                  "startColumn": 3,
+                  "startLine": 7
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "Remote module ID came from an instance value"
+          },
+          "partialFingerprints": {
+            "bloxguard/v1": "653b0bbe3516a8ace4c673e122370da98bcfc3e594fa9171349e9a6d378e8db5"
+          },
+          "properties": {
+            "confidence": "high",
+            "evidence": "require(moduleId)",
+            "instancePath": "/Workspace/FAKE café/Loader",
+            "severity": "critical"
+          },
+          "relatedLocations": [
+            {
+              "id": 1,
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "/Workspace/FAKE café/Settings/ModuleId",
+                  "kind": "instance"
+                }
+              ],
+              "message": {
+                "text": "Resolved moduleId from this NumberValue"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/work%20dir/FAKE%20place.rbxlx"
+                }
+              },
+              "properties": {
+                "origin": "property",
+                "property": "Value"
+              }
+            }
+          ],
+          "ruleId": "BG002",
+          "ruleIndex": 1
+        }
+      ],
+      "tool": {
+        "driver": {
+          "name": "bloxguard",
+          "rules": [
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "fullDescription": {
+                "text": "Numeric or unresolved external module loading."
+              },
+              "help": {
+                "markdown": "Review external module loading. Prefer code stored in your repository. Trust specific IDs only after review.",
+                "text": "Review external module loading. Prefer code stored in your repository. Trust specific IDs only after review."
+              },
+              "id": "BG001",
+              "name": "Remote module require",
+              "properties": {
+                "confidence": "high",
+                "defaultSeverity": "high",
+                "documentation": "https://github.com/waltuov/bloxguard/blob/master/docs/rules/BG001.md",
+                "tags": [
+                  "security"
+                ]
+              },
+              "shortDescription": {
+                "text": "Numeric or unresolved external module loading."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "fullDescription": {
+                "text": "Remote module IDs read from instance properties or attributes."
+              },
+              "help": {
+                "markdown": "Review the script and the related property location. Hidden configuration can change the module that runs.",
+                "text": "Review the script and the related property location. Hidden configuration can change the module that runs."
+              },
+              "id": "BG002",
+              "name": "Property-backed remote loader",
+              "properties": {
+                "confidence": "high",
+                "defaultSeverity": "critical",
+                "documentation": "https://github.com/waltuov/bloxguard/blob/master/docs/rules/BG002.md",
+                "tags": [
+                  "security"
+                ]
+              },
+              "shortDescription": {
+                "text": "Remote module IDs read from instance properties or attributes."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "fullDescription": {
+                "text": "loadstring or an alias builds executable code at runtime."
+              },
+              "help": {
+                "markdown": "Inspect the code origin. This scanner never executes or fetches generated code.",
+                "text": "Inspect the code origin. This scanner never executes or fetches generated code."
+              },
+              "id": "BG003",
+              "name": "Runtime code compilation",
+              "properties": {
+                "confidence": "high",
+                "defaultSeverity": "high",
+                "documentation": "https://github.com/waltuov/bloxguard/blob/master/docs/rules/BG003.md",
+                "tags": [
+                  "security"
+                ]
+              },
+              "shortDescription": {
+                "text": "loadstring or an alias builds executable code at runtime."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "fullDescription": {
+                "text": "Environment access can hide calls or replace globals."
+              },
+              "help": {
+                "markdown": "Review getfenv, setfenv and indirect environment access. Legacy libraries may use them legitimately.",
+                "text": "Review getfenv, setfenv and indirect environment access. Legacy libraries may use them legitimately."
+              },
+              "id": "BG004",
+              "name": "Environment manipulation",
+              "properties": {
+                "confidence": "high",
+                "defaultSeverity": "high",
+                "documentation": "https://github.com/waltuov/bloxguard/blob/master/docs/rules/BG004.md",
+                "tags": [
+                  "security"
+                ]
+              },
+              "shortDescription": {
+                "text": "Environment access can hide calls or replace globals."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "fullDescription": {
+                "text": "Encoded strings, character chains or dispatch shapes obscure behavior."
+              },
+              "help": {
+                "markdown": "Review source that conceals intent. Minification and embedded data may be harmless. Correlated loaders raise severity.",
+                "text": "Review source that conceals intent. Minification and embedded data may be harmless. Correlated loaders raise severity."
+              },
+              "id": "BG005",
+              "name": "Obfuscation signals",
+              "properties": {
+                "confidence": "medium",
+                "defaultSeverity": "medium",
+                "documentation": "https://github.com/waltuov/bloxguard/blob/master/docs/rules/BG005.md",
+                "tags": [
+                  "security"
+                ]
+              },
+              "shortDescription": {
+                "text": "Encoded strings, character chains or dispatch shapes obscure behavior."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "fullDescription": {
+                "text": "Script placement, names or run context deserve review."
+              },
+              "help": {
+                "markdown": "Inspect the instance path and run context. Unusual placement alone does not establish malicious intent.",
+                "text": "Inspect the instance path and run context. Unusual placement alone does not establish malicious intent."
+              },
+              "id": "BG006",
+              "name": "Unusual script placement",
+              "properties": {
+                "confidence": "medium",
+                "defaultSeverity": "medium",
+                "documentation": "https://github.com/waltuov/bloxguard/blob/master/docs/rules/BG006.md",
+                "tags": [
+                  "security"
+                ]
+              },
+              "shortDescription": {
+                "text": "Script placement, names or run context deserve review."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "fullDescription": {
+                "text": "Code imports assets or objects at runtime."
+              },
+              "help": {
+                "markdown": "Review the destination and inserted content. Offline analysis cannot inspect content fetched later.",
+                "text": "Review the destination and inserted content. Offline analysis cannot inspect content fetched later."
+              },
+              "id": "BG007",
+              "name": "Runtime asset loading",
+              "properties": {
+                "confidence": "high",
+                "defaultSeverity": "high",
+                "documentation": "https://github.com/waltuov/bloxguard/blob/master/docs/rules/BG007.md",
+                "tags": [
+                  "security"
+                ]
+              },
+              "shortDescription": {
+                "text": "Code imports assets or objects at runtime."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "fullDescription": {
+                "text": "Outbound calls use suspicious endpoints or player and game data."
+              },
+              "help": {
+                "markdown": "Review what is sent and who controls the endpoint. Approved analytics can resemble exfiltration.",
+                "text": "Review what is sent and who controls the endpoint. Approved analytics can resemble exfiltration."
+              },
+              "id": "BG008",
+              "name": "Possible HTTP exfiltration",
+              "properties": {
+                "confidence": "medium",
+                "defaultSeverity": "high",
+                "documentation": "https://github.com/waltuov/bloxguard/blob/master/docs/rules/BG008.md",
+                "tags": [
+                  "security"
+                ]
+              },
+              "shortDescription": {
+                "text": "Outbound calls use suspicious endpoints or player and game data."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "fullDescription": {
+                "text": "Studio, identity or time checks control risky actions."
+              },
+              "help": {
+                "markdown": "Review hidden activation paths and long delays. Ordinary debug checks can be legitimate.",
+                "text": "Review hidden activation paths and long delays. Ordinary debug checks can be legitimate."
+              },
+              "id": "BG009",
+              "name": "Conditional activation",
+              "properties": {
+                "confidence": "medium",
+                "defaultSeverity": "medium",
+                "documentation": "https://github.com/waltuov/bloxguard/blob/master/docs/rules/BG009.md",
+                "tags": [
+                  "security"
+                ]
+              },
+              "shortDescription": {
+                "text": "Studio, identity or time checks control risky actions."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "fullDescription": {
+                "text": "Purchase prompts or external teleport destinations need review."
+              },
+              "help": {
+                "markdown": "Confirm the destination belongs to your experience or intended shop. Offline files do not prove ownership.",
+                "text": "Confirm the destination belongs to your experience or intended shop. Offline files do not prove ownership."
+              },
+              "id": "BG010",
+              "name": "Prompts and redirects",
+              "properties": {
+                "confidence": "medium",
+                "defaultSeverity": "medium",
+                "documentation": "https://github.com/waltuov/bloxguard/blob/master/docs/rules/BG010.md",
+                "tags": [
+                  "security"
+                ]
+              },
+              "shortDescription": {
+                "text": "Purchase prompts or external teleport destinations need review."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "fullDescription": {
+                "text": "Package links or linked source can change independently."
+              },
+              "help": {
+                "markdown": "Review package ownership, permissions and automatic updates. Your own packages can trigger this rule.",
+                "text": "Review package ownership, permissions and automatic updates. Your own packages can trigger this rule."
+              },
+              "id": "BG011",
+              "name": "Externally linked content",
+              "properties": {
+                "confidence": "medium",
+                "defaultSeverity": "medium",
+                "documentation": "https://github.com/waltuov/bloxguard/blob/master/docs/rules/BG011.md",
+                "tags": [
+                  "security"
+                ]
+              },
+              "shortDescription": {
+                "text": "Package links or linked source can change independently."
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "fullDescription": {
+                "text": "Text asks a developer to run or paste commands."
+              },
+              "help": {
+                "markdown": "Do not paste commands from untrusted content. Tutorials may contain legitimate instructions.",
+                "text": "Do not paste commands from untrusted content. Tutorials may contain legitimate instructions."
+              },
+              "id": "BG012",
+              "name": "Developer command instruction",
+              "properties": {
+                "confidence": "medium",
+                "defaultSeverity": "high",
+                "documentation": "https://github.com/waltuov/bloxguard/blob/master/docs/rules/BG012.md",
+                "tags": [
+                  "security"
+                ]
+              },
+              "shortDescription": {
+                "text": "Text asks a developer to run or paste commands."
+              }
+            }
+          ],
+          "semanticVersion": "0.1.0"
+        }
+      }
+    }
+  ],
+  "version": "2.1.0"
+}
